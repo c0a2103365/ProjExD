@@ -9,7 +9,7 @@ num_of_trials = 2
 
 def shutudai(alphabet):
     all_chars = random.sample(alphabet, num_of_all_chars)
-    print("対象文字")
+    print("対象文字:")
     for c in all_chars:
         print(c, end=" ")
     print()
