@@ -5,8 +5,11 @@ import tkinter.messagebox as tkm
 def button_click(event):
     btn = event.widget
     num = btn["text"]
-    # tkm.showinfo("", f"{num}のボタンがクリックされました")
-    entry.insert(tk.END, num)
+    if num == "=":
+        pass
+    else:
+        # tkm.showinfo("", f"{num}のボタンがクリックされました")
+        entry.insert(tk.END, num)
 
 
 root = tk.Tk()
@@ -35,6 +38,7 @@ for ope in operators:
     button = tk.Button(root, text=f"{ope}",
                        width=4, height=2, font=("", "30", ""))
     button.grid(row=r, column=c)
+    button.bind("<1>", button_click)
     c += 1
     if c % 3 == 0:
         r += 1
