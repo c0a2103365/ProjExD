@@ -9,7 +9,7 @@ def button_click(event):
     if num == "=":
         siki = entry.get()
         if siki[0] in "m":
-            siki+=")"
+            siki += ")"
         res = eval(siki)
         entry.delete(0, tk.END)
         entry.insert(tk.END, res)
@@ -33,9 +33,9 @@ def button_click(event):
     elif num == "÷":
         num = "/"
         entry.insert(tk.END, num)
-    
-    elif num=="rad":
-        num="math.radians("
+
+    elif num == "rad":
+        num = "math.radians("
         entry.insert(tk.END, num)
 
     else:
@@ -73,15 +73,15 @@ for num in fig_list:
 
 r, c = 1, 3
 
-operators = [".", "+", "x", "x^2", "√", "%", "÷","rad", "="]
+operators = [".", "+", "x", "x^2", "√", "%", "÷", "rad", "="]
 for ope in operators:
     button = tk.Button(root, text=f"{ope}",
                        width=4, height=2, font=("", "30", ""))
     button.grid(row=r, column=c)
     button.bind("<1>", button_click)
     c += 1
-    if c%5==0:
-        r+=1
-        c=3
+    if c % 5 == 0:
+        r += 1
+        c = 3
 
 root.mainloop()
