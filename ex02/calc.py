@@ -34,6 +34,7 @@ def button_click(event):
         num = "/"
         entry.insert(tk.END, num)
 
+    # 三角関数のラジアンの計算を行います
     elif num == "rad":
         num = "math.radians("
         entry.insert(tk.END, num)
