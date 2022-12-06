@@ -18,24 +18,24 @@ def main_proc():
     global cx, cy, mx, my, ms_count
     if key == "Up":
         my -= 1
-    if key == "Down":
+    elif key == "Down":
         my += 1
-    if key == "Left":
+    elif key == "Left":
         mx -= 1
-    if key == "Right":
+    elif key == "Right":
         mx += 1
     # qまたはtまたはrボタンを押下すると、メッセージが出る。
-    if key == "q":
+    elif key == "q":
         tkm.showwarning("開発者からの警告", "ゲームをやめようとしないでください。")
-    if key == "t":
+    elif key == "t":
         mx = 13
         my = 7
         tkm.showerror("開発者からのメッセージ", "あなたはズルをしました。\nこのゲームを起動し直してください。")
-    if key == "r":
+    elif key == "r":
         mx = 1
         my = 1
         tkm.showinfo("開発者からのメッセージ", "ゲームをやり直します。")
-    if maze_lst[mx][my] == 1:  # 移動先が壁だったら
+    elif maze_lst[mx][my] == 1:  # 移動先が壁だったら
         if key == "Up":
             my += 1
         if key == "Down":
