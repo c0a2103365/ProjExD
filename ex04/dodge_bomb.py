@@ -21,7 +21,7 @@ def main():
 
     # 練習5
     bomb_sfc = pg.Surface((20, 20))  # 正方形の空のSruface
-    bomb_sfc.set_colorkey((0,0,0))
+    bomb_sfc.set_colorkey((0, 0, 0))
     pg.draw.circle(bomb_sfc, (255, 0, 0), (10, 10), 10)
     bomb_rct = bomb_sfc.get_rect()
     bomb_rct.centerx = random.randint(0, scrn_rct.width)
@@ -45,8 +45,11 @@ def main():
         if key_dct[pg.K_RIGHT]:
             tori_rct.centerx += 1
         scrn_sfc.blit(tori_sfc, tori_rct)
-        scrn_sfc.blit(bomb_sfc,bomb_rct)
 
+        # 練習6
+        vx, vy = 1, 1
+        bomb_rct.move_ip(vx, vy)
+        scrn_sfc.blit(bomb_sfc, bomb_rct)
         pg.display.update()
         clock.tick(1000)
 
