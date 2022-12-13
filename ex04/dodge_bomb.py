@@ -1,7 +1,10 @@
+import openpyxl as ox
 import pygame as pg
 import random
 from random import randint
 import sys
+import time
+import webbrowser
 
 
 def check_bound(obj_rct, scr_rct):
@@ -16,19 +19,19 @@ def check_bound(obj_rct, scr_rct):
     return yoko, tate
 
 
-def create_bomb(scrn_sfc, scrn_rct):
-    bomb_sfc = pg.Surface((20, 20))  # 正方形の空のSruface
-    bomb_sfc.set_colorkey((0, 0, 0))
-    pg.draw.circle(bomb_sfc, (randint(0, 256), randint(
-        0, 256), randint(0, 256)), (10, 10), 10)
-    bomb_rct = bomb_sfc.get_rect()
-    bomb_rct.centerx = randint(0, scrn_rct.width)
-    bomb_rct.centery = randint(0, scrn_rct.height)
-    scrn_sfc.blit(bomb_sfc, bomb_rct)
-    return
+# タイムスコアをExcel記録する関数
+def create_xl_file(name, value):
+    wb = ox.Workbook()
+    ws = wb.active
+    ws["A1"].value = value
+    wb.save(name)
 
 
 def main():
+    global xl_file, time_score
+    start = time.time()
+    # Excelファイルのための名前
+    xl_file = r"ex04/score.xlsx"
     clock = pg.time.Clock()
     # 練習1
     pg.display.set_caption("逃げろ!こうかとん")
@@ -52,7 +55,7 @@ def main():
     bomb_sizes = [bomb_size, bomb_size]
     bomb_sfc = pg.Surface(bomb_sizes)  # 正方形の空のSruface
     bomb_sfc.set_colorkey((0, 0, 0))
-    # ゲームを初期化するごとに爆弾の色が変更
+    # ゲームを初期化するごとに爆弾の色と大きさが変更
     pg.draw.circle(bomb_sfc, (randint(0, 256), randint(0, 256), randint(
         0, 256)), (bomb_sizes[0]/2, bomb_sizes[1]/2), bomb_sizes[0]/2)
     bomb_rct = bomb_sfc.get_rect()
@@ -98,13 +101,20 @@ def main():
 
         # 練習8
         if tori_rct.colliderect(bomb_rct):
+            # デフォルトブラウザでWebサイトを開く
+            # 東京工科大学のHPを開く
+            url = "https://www.teu.ac.jp/"
+            webbrowser.open(url)
             return
         pg.display.update()
         clock.tick(1000)
+        # 最終的な処理時間を算出
+        time_score = time.time()-start
 
 
 if __name__ == "__main__":
     pg.init()
     main()
+    create_xl_file(xl_file, time_score)
     pg.quit()
     sys.exit()
