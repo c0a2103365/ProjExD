@@ -1,4 +1,4 @@
-import openpyxl as ox
+import openpyxl
 import pygame as pg
 import random
 from random import randint
@@ -21,7 +21,7 @@ def check_bound(obj_rct, scr_rct):
 
 # タイムスコアをExcel記録する関数
 def create_xl_file(name, value):
-    wb = ox.Workbook()
+    wb = openpyxl.Workbook()
     ws = wb.active
     ws["A1"].value = value
     wb.save(name)
