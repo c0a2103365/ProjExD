@@ -70,6 +70,7 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return
+            
         # 練習4
         key_dct = pg.key.get_pressed()  # 辞書型
         if key_dct[pg.K_UP]:
