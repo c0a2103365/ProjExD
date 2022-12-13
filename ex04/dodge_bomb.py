@@ -38,14 +38,17 @@ def main():
     pgbg_rct = pgbg_sfc.get_rect()
 
     # 練習3
-    tori_sfc = pg.image.load("fig/6.png")
+    # ファイルをランダムに選ぶための数字の配列
+    file_nums = [num for num in range(0, 10)]
+    # ランダムにこうかとんを選ぶ
+    tori_sfc = pg.image.load(f"fig/{random.choice(file_nums)}.png")
     tori_sfc = pg.transform.rotozoom(tori_sfc, 0, 2.0)
     tori_rct = tori_sfc.get_rect()
     tori_rct.center = 900, 400
     scrn_sfc.blit(tori_sfc, tori_rct)
 
     # 練習5
-    bomb_size = randint(1, 71)
+    bomb_size = randint(20, 101)
     bomb_sizes = [bomb_size, bomb_size]
     bomb_sfc = pg.Surface(bomb_sizes)  # 正方形の空のSruface
     bomb_sfc.set_colorkey((0, 0, 0))
