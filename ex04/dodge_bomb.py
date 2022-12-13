@@ -1,5 +1,6 @@
 import pygame as pg
 import random
+from random import randint
 import sys
 
 
@@ -13,6 +14,18 @@ def check_bound(obj_rct, scr_rct):
     if obj_rct.top < scr_rct.top or scr_rct.bottom < obj_rct.bottom:
         tate = -1
     return yoko, tate
+
+
+def create_bomb(scrn_sfc, scrn_rct):
+    bomb_sfc = pg.Surface((20, 20))  # 正方形の空のSruface
+    bomb_sfc.set_colorkey((0, 0, 0))
+    pg.draw.circle(bomb_sfc, (randint(0, 256), randint(
+        0, 256), randint(0, 256)), (10, 10), 10)
+    bomb_rct = bomb_sfc.get_rect()
+    bomb_rct.centerx = randint(0, scrn_rct.width)
+    bomb_rct.centery = randint(0, scrn_rct.height)
+    scrn_sfc.blit(bomb_sfc, bomb_rct)
+    return
 
 
 def main():
@@ -32,12 +45,16 @@ def main():
     scrn_sfc.blit(tori_sfc, tori_rct)
 
     # 練習5
-    bomb_sfc = pg.Surface((20, 20))  # 正方形の空のSruface
+    bomb_size = randint(1, 71)
+    bomb_sizes = [bomb_size, bomb_size]
+    bomb_sfc = pg.Surface(bomb_sizes)  # 正方形の空のSruface
     bomb_sfc.set_colorkey((0, 0, 0))
-    pg.draw.circle(bomb_sfc, (255, 0, 0), (10, 10), 10)
+    # ゲームを初期化するごとに爆弾の色が変更
+    pg.draw.circle(bomb_sfc, (randint(0, 256), randint(0, 256), randint(
+        0, 256)), (bomb_sizes[0]/2, bomb_sizes[1]/2), bomb_sizes[0]/2)
     bomb_rct = bomb_sfc.get_rect()
-    bomb_rct.centerx = random.randint(0, scrn_rct.width)
-    bomb_rct.centery = random.randint(0, scrn_rct.height)
+    bomb_rct.centerx = randint(0, scrn_rct.width)
+    bomb_rct.centery = randint(0, scrn_rct.height)
     scrn_sfc.blit(bomb_sfc, bomb_rct)
 
     vx, vy = +1, +1
