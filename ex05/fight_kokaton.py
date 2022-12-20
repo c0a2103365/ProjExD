@@ -1,5 +1,9 @@
+import webbrowser
 import pygame as pg
 import random
+import openpyxl
+import pandas as pd
+import time
 import sys
 
 
@@ -67,6 +71,29 @@ class Bomb:
         self.blit(scr)
 
 
+# スコアブックを生成する。（Excelファイル）
+
+class Commonfile:
+    def __init__(self, filename):
+        self.filename = filename
+
+
+class ExcelScore(Commonfile):
+
+    def generate_file(self, value):
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws["A1"] = "経過時間"
+        ws["B1"] = value
+        wb.save(self.filename)
+
+
+class Csv(Commonfile):
+    def generate_file(self):
+        df = pd.read_excel(self.filename)
+        df.to_csv("ex05/score.csv", index=False)
+
+
 def check_bound(obj_rct, scr_rct):
     """
     第1引数：こうかとんrectまたは爆弾rect
@@ -82,25 +109,32 @@ def check_bound(obj_rct, scr_rct):
 
 
 def main():
+    global time_score
     clock = pg.time.Clock()
+    start = time.time()
 
     # 練習1
-    scr = Screen("逃げろこうかとん", (1600, 900), "fig/pg_bg.jpg")
+    scr = Screen("負けるなこうかとん!", (1600, 900), "fig/pg_bg.jpg")
 
     # 練習３
-    kkt = Bird("fig/6.png", 2.0, (900, 400))
+    # こうかとんの画像集
+    kkt_images = [f"fig/{i}.png" for i in range(0, 10)]
+    # こうかとんの画像を無作為に選択する。
+    kkt = Bird(kkt_images[random.randint(0, 10)], 2.0, (900, 400))
     kkt.update(scr)
 
     # 練習５
     bkd_lst = []
-    for _ in range(5):
+    # ボールがランダムに数が変わるように変数を定義
+    rdm_boll = random.randint(1, 6)
+    for _ in range(rdm_boll):
         # 追加機能:ボールの色が起動するごとに変わる
         # 3原色を管理するタプル（内包表記）
         random_color_tpl = (random.randint(0, 256) for _ in range(3))
         color1, color2, color3 = random_color_tpl
         bkd = Bomb((color1, color2, color3), 10, (1, 1), scr)
         bkd_lst.append(bkd)
-    # bkd.update(scr)
+
     # 練習２
     while True:
         scr.blit()
@@ -110,18 +144,28 @@ def main():
                 return
 
         kkt.update(scr)
-        for i in range(5):
+        for i in range(rdm_boll):
             bkd_lst[i].update(scr)
             bkd.update(scr)
             if kkt.rct.colliderect(bkd_lst[i].rct):
+                # 学内ポータルサイトが開く
+                url = "https://service.cloud.teu.ac.jp/portal/index?"
+                webbrowser.open(url)
                 return
 
         pg.display.update()
-        clock.tick(100)
+        clock.tick(1000)
+        time_score = time.time()-start
 
 
 if __name__ == "__main__":
     pg.init()
     main()
+    # Excelスコアファイルを出力
+    scorefile_excel = ExcelScore("ex05/score1.xlsx")
+    scorefile_excel.generate_file(time_score)
+    # CSVスコアファイルを出力
+    scorefile_csv = Csv("ex05/score1.xlsx")
+    scorefile_csv.generate_file()
     pg.quit()
     sys.exit()
