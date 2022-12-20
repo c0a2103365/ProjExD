@@ -1,10 +1,12 @@
-import webbrowser
-import pygame as pg
 import random
-import openpyxl
-import pandas as pd
 import time
 import sys
+
+import webbrowser
+import pygame as pg
+import openpyxl
+import pandas as pd
+from PIL import Image, ImageFilter
 
 
 class Screen:
@@ -71,15 +73,14 @@ class Bomb:
         self.blit(scr)
 
 
-# スコアブックを生成する。（Excelファイル）
-
+# ファイルを出力する抽象クラス
 class Commonfile:
     def __init__(self, filename):
         self.filename = filename
 
 
+# Excelファイルを出力するクラス
 class ExcelScore(Commonfile):
-
     def generate_file(self, value):
         wb = openpyxl.Workbook()
         ws = wb.active
@@ -88,10 +89,20 @@ class ExcelScore(Commonfile):
         wb.save(self.filename)
 
 
+# CSVファイルを出力するクラス
 class Csv(Commonfile):
     def generate_file(self):
         df = pd.read_excel(self.filename)
         df.to_csv("ex05/score.csv", index=False)
+
+
+# Webブラウザを開くためのクラス
+class WebOpen:
+    def __init__(self, url):
+        self.url = url
+
+    def open(self):
+        webbrowser.open(self.url)
 
 
 def check_bound(obj_rct, scr_rct):
@@ -119,8 +130,9 @@ def main():
     # 練習３
     # こうかとんの画像集
     kkt_images = [f"fig/{i}.png" for i in range(0, 10)]
+    image = random.choice(kkt_images)
     # こうかとんの画像を無作為に選択する。
-    kkt = Bird(kkt_images[random.randint(0, 10)], 2.0, (900, 400))
+    kkt = Bird(image, 2.0, (900, 400))
     kkt.update(scr)
 
     # 練習５
@@ -149,12 +161,15 @@ def main():
             bkd.update(scr)
             if kkt.rct.colliderect(bkd_lst[i].rct):
                 # 学内ポータルサイトが開く
-                url = "https://service.cloud.teu.ac.jp/portal/index?"
-                webbrowser.open(url)
+                web = WebOpen("https://service.cloud.teu.ac.jp/portal/index?")
+                web.open()
+                # 写真アプリで使用したこうかとんを確認
+                im = Image.open(image)
+                im.show()
                 return
 
         pg.display.update()
-        clock.tick(1000)
+        clock.tick(100)
         time_score = time.time()-start
 
 
