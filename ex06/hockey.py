@@ -1,7 +1,6 @@
 import pygame as pg
 import sys
 
-
 SCREENRECT = pg.Rect(0, 0, 1321, 701)
 
 
@@ -156,7 +155,7 @@ def main():
         pg.display.update()
         clock.tick(1000)
 
-        if ball.rct.left <= scr.rct.left or scr.rct.right <= ball.rct.left:
+        if ball.rct.left <= scr.rct.left or scr.rct.right <= ball.rct.right:
             return
 
 
