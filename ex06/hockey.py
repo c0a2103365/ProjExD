@@ -1,4 +1,5 @@
 import pygame as pg
+import random
 import sys
 
 # 画面の大きさに関する定数
@@ -94,6 +95,33 @@ class Ball:
         self.blit(scr)
 
 
+# スコアボードを生成するクラス
+class Scoreboard:
+    def __init__(self, color, xy, yoko, tate, px, scr: Screen):
+        self.sfc = pg.Surface((yoko, tate))  # 正方形の空のSurface
+        self.sfc.set_colorkey((0, 0, 0))
+        pg.draw.rect(self.sfc, color, (0, 0, yoko, tate), width=0)
+        self.rct = self.sfc.get_rect()
+        self.rct.center = xy
+        self.px = px
+
+    def font_1(self, score: str):
+        font = pg.font.Font(None, self.px)
+        text = font.render(score, True, (255, 255, 255))
+        self.blit(text, [20, 100])
+
+    def font_2(self, score: str):
+        font = pg.font.Font(None, self.px)
+        text = font.render(score, True, (255, 255, 255))
+        self.blit(text, [20, 100])
+
+    def blit(self, scr: Screen):
+        scr.sfc.blit(self.sfc, self.rct)
+
+    def update(self, scr: Screen):
+        self.blit(scr)
+
+
 # ボールの判定に関するクラス
 def check_bound(obj_rct, scr_rct):
     # ボールの跳ね返りを判定する
@@ -136,11 +164,16 @@ def main():
     ball = Ball((0, 122, 122), 10, (1, 1), scr)
     ball.update(scr)
 
+    board = Scoreboard((0, 0, 255), (670, 680), 500, 100, 55, scr)
+    board.update(scr)
+
     # ゲームが続行している間
     while True:
         scr.blit()
         p1.update(scr)
         p2.update(scr)
+
+        p1_score, p2_score = 0, 0
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -154,16 +187,33 @@ def main():
         ball.update(scr)
         # ボールとの衝突
         if p1.rct.colliderect(ball.rct):
-            ball.vx *= -1
+            if ball.vx == 0:
+                ball.vx = +1
+                ball.vy = random.randint(-1, 1)
+            else:
+                ball.vx *= -1
         elif p2.rct.colliderect(ball.rct):
-            ball.vx *= -1
+            if ball.vx == 0:
+                ball.vx = +1
+                ball.vy = random.randint(-1, 1)
+            else:
+                ball.vx *= -1
+
+        if ball.rct.left < scr.rct.left:
+            ball.rct.center = (300, 400)
+            ball.vx = 0
+            ball.vy = 0
+            p2_score += 1
+        if scr.rct.right < ball.rct.right:  # 出たとき
+            ball.rct.center = (1000, 350)
+            ball.vx = 0
+            ball.vy = 0
+            p1_score += 1
+
+        board.update(scr)
 
         pg.display.update()
         clock.tick(1000)
-
-        # ボールが壁に接触したらゲーム終了（強制終了）
-        if ball.rct.left <= scr.rct.left or scr.rct.right <= ball.rct.right:
-            return
 
 
 if __name__ == "__main__":
