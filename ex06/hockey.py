@@ -1,10 +1,12 @@
 import pygame as pg
 import sys
 
+# 画面の大きさに関する定数
 SCREENRECT = pg.Rect(0, 0, 1321, 701)
 
 
-class Screen:  # スクリーン
+# スクリーンを生成するクラス
+class Screen:
     def __init__(self, title, size, bgf):
         self.title = title
         self.size = size
@@ -43,6 +45,7 @@ class Screen:  # スクリーン
         fullscreen = not fullscreen
 
 
+# プレイヤー（バー）を生成するクラス
 class Player:
     def __init__(self, color, xy, yoko, tate, key_delta, scr: Screen):
         self.sfc = pg.Surface((yoko, tate))  # 正方形の空のSurface
@@ -69,7 +72,8 @@ class Player:
         self.blit(scr)
 
 
-class Ball:  # ボールのクラス
+# ボールの描画クラス
+class Ball:
     def __init__(self, color, rad, vxy, scr: Screen):
         self.sfc = pg.Surface((2*rad, 2*rad))  # 正方形の空のSurface
         self.sfc.set_colorkey((0, 0, 0))
@@ -90,12 +94,9 @@ class Ball:  # ボールのクラス
         self.blit(scr)
 
 
+# ボールの判定に関するクラス
 def check_bound(obj_rct, scr_rct):
-    """
-    第1引数：こうかとんrectまたは爆弾rect
-    第2引数：スクリーンrect
-    範囲内：+1／範囲外：-1
-    """
+    # ボールの跳ね返りを判定する
     yoko, tate = +1, +1
     if obj_rct.left < scr_rct.left or scr_rct.right < obj_rct.right:
         yoko = -1
@@ -107,7 +108,8 @@ def check_bound(obj_rct, scr_rct):
 def main():
     global fullscreen
     clock = pg.time.Clock()
-    scr = Screen("2Dテニス", SCREENRECT.size, "fig/tennis_court.jpg")
+    # スクリーンのインスタンスを生成
+    scr = Screen("2Dホッケー", SCREENRECT.size, "fig/tennis_court.jpg")
     fullscreen = False  # フルスクリーン無効
 
     key_delta_p1 = {
@@ -116,6 +118,7 @@ def main():
         pg.K_a:  [-1, 0],
         pg.K_d: [+1, 0],
     }
+    # プレイヤー1（画面左側）のインスタンス生成
     p1 = Player((255, 0, 0), (100, 500), 10, 100, key_delta_p1, scr)
     p1.blit(scr)
 
@@ -125,12 +128,15 @@ def main():
         pg.K_LEFT:  [-1, 0],
         pg.K_RIGHT: [+1, 0],
     }
+    # プレイヤー2（画面右側）のインスタンス生成
     p2 = Player((0, 255, 0), (900, 500), 10, 100, key_delta_p2, scr)
     p2.blit(scr)
 
+    # ボールのインスタンス生成
     ball = Ball((0, 122, 122), 10, (1, 1), scr)
     ball.update(scr)
 
+    # ゲームが続行している間
     while True:
         scr.blit()
         p1.update(scr)
@@ -155,6 +161,7 @@ def main():
         pg.display.update()
         clock.tick(1000)
 
+        # ボールが壁に接触したらゲーム終了（強制終了）
         if ball.rct.left <= scr.rct.left or scr.rct.right <= ball.rct.right:
             return
 
